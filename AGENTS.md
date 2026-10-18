@@ -1,5 +1,7 @@
 # AGENTS.md: portfolio-api
 
+> Current access requirements (2026-10-18): approved users manage only their own content; only Oshitha as admin can manage all content, view other users, and change approval status. See docs/ACCESS-CONTROL.md (relative to the backend root). This supersedes historical single-owner and unresolved-permission statements below.
+
 Instructions for any coding agent (Codex, Claude Code, others) working in this repo.
 This repo is the **NestJS backend** of a single-owner portfolio website with a private admin CMS. The frontend is the sibling folder `../portfolio-web` (starts Day 6).
 

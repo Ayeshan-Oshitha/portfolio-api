@@ -1,5 +1,7 @@
 # portfolio-api — NestJS backend for the portfolio + personal CMS
 
+> Current access requirements (2026-10-18): approved users manage only their own content; only Oshitha as admin can manage all content, view other users, and change approval status. See docs/ACCESS-CONTROL.md (relative to the backend root). This supersedes historical single-owner and unresolved-permission statements below.
+
 Single-owner portfolio website with a private admin CMS. Oshitha is the only user.
 This folder is the **backend**. The frontend lives in the sibling folder `../portfolio-web` and gets its own `CLAUDE.md` when Day 6 starts.
 8-day build. Overall progress is tracked in `../PROGRESS.md` (Claude keeps it updated). Full design: @docs/ARCHITECTURE.md.

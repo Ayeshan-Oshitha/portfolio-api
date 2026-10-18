@@ -12,19 +12,25 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
-  id             String    @id
+  id             String         @id
   name           String
   email          String
-  emailVerified  Boolean   @default(false)
+  emailVerified  Boolean        @default(false)
   image          String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
   role           String?
-  banned         Boolean?  @default(false)
+  banned         Boolean?       @default(false)
   banReason      String?
   banExpires     DateTime?
-  approvalStatus String    @default("PENDING")
+  approvalStatus ApprovalStatus @default(PENDING)
   sessions       Session[]
   accounts       Account[]
 

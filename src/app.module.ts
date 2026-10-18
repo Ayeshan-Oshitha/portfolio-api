@@ -6,6 +6,9 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { PrismaService } from './prisma/prisma.service.js';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { createAuth } from './auth/auth.js';
+import { AccessController } from './auth/access.controller.js';
+import { ApprovedUserGuard } from './auth/approved-user.guard.js';
+import { AdminGuard } from './auth/admin.guard.js';
 
 @Module({
   imports: [
@@ -22,6 +25,7 @@ import { createAuth } from './auth/auth.js';
       }),
     }),
   ],
-  controllers: [HealthController],
+  controllers: [HealthController, AccessController],
+  providers: [ApprovedUserGuard, AdminGuard],
 })
 export class AppModule {}

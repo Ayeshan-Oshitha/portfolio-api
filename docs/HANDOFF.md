@@ -1,5 +1,7 @@
 # Handoff: where the project stands
 
+> Current access requirements (2026-10-18): approved users manage only their own content; only Oshitha as admin can manage all content, view other users, and change approval status. See docs/ACCESS-CONTROL.md (relative to the backend root). This supersedes historical single-owner and unresolved-permission statements below.
+
 Written 2026-10-17 so another coding agent (Codex) can continue. Read `../AGENTS.md` first (working rules), then this file, then `ARCHITECTURE.md` and `DATA-MODELS.md`. The overall checklist is `../../PROGRESS.md`.
 
 ## What this is

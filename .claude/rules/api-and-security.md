@@ -1,5 +1,7 @@
 # API design and security rules
 
+> Current access requirements (2026-10-18): approved users manage only their own content; only Oshitha as admin can manage all content, view other users, and change approval status. See docs/ACCESS-CONTROL.md (relative to the backend root). This supersedes historical single-owner and unresolved-permission statements below.
+
 ## Two surfaces
 Scope update (2026-10-18): public registration is required; the older sign-up-disabled rule below is superseded. Ordinary users start PENDING; the admin controls APPROVED/REJECTED/PENDING changes. Approval never grants admin rights. Protect admin operations by role, and approved-only operations by current approval status on each request so status reversals affect existing sessions. Approved-user capabilities still need clarification before those routes are implemented.
 

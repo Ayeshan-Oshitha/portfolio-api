@@ -1,5 +1,7 @@
 # Data models
 
+> Current access requirements (2026-10-18): approved users manage only their own content; only Oshitha as admin can manage all content, view other users, and change approval status. See docs/ACCESS-CONTROL.md (relative to the backend root). This supersedes historical single-owner and unresolved-permission statements below.
+
 Reference for every table, field and attribute. **Nothing here is applied yet** except what the migration history shows (currently no migrations). Tables are added **per feature**, one Prisma migration each, in the order of the day plan. The Prisma sketch at the end is the target; adjust it when implementing and keep this file in sync.
 
 ## Conventions
