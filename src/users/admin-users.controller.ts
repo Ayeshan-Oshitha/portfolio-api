@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -24,6 +25,7 @@ import { AdminGuard } from '../auth/admin.guard.js';
 import { UsersService } from './users.service.js';
 import { UpdateApprovalStatusDto } from './dto/update-approval-status.dto.js';
 
+@ApiBearerAuth('bearerAuth')
 @ApiTags('Admin users')
 @UseGuards(AdminGuard)
 @Controller('admin/users')

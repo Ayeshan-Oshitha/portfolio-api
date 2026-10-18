@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { admin, bearer } from 'better-auth/plugins';
+import { admin, bearer, openAPI } from 'better-auth/plugins';
 import type { ConfigService } from '@nestjs/config';
 import type { Env } from '../config/env.js';
 import type { PrismaService } from '../prisma/prisma.service.js';
@@ -37,6 +37,9 @@ export function createAuth(config: ConfigService<Env, true>, prisma: PrismaServi
         adminRoles: ['admin'],
       }),
       bearer(),
+      openAPI({
+        disableDefaultReference: true,
+      }),
     ],
   });
 }

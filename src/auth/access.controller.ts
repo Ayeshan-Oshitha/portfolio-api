@@ -1,8 +1,10 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApprovedUserGuard } from './approved-user.guard.js';
 import { AdminGuard } from './admin.guard.js';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 // This controller is for testing access control based on user approval and admin status.
+@ApiBearerAuth('bearerAuth')
 @Controller('access')
 export class AccessController {
   @Get('content')

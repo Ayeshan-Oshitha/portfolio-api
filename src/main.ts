@@ -28,10 +28,36 @@ async function bootstrap() {
     .setTitle('Portfolio API')
     .setDescription('Portfolio API documentation')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        description: 'Session token returned by Better Auth login',
+      },
+      'bearerAuth',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  app.use('/api/docs', apiReference({ content: document, theme: 'default', darkMode: true }));
+  app.use(
+    '/api/docs',
+    apiReference({
+      theme: 'default',
+      darkMode: true,
+      sources: [
+        {
+          title: 'Portfolio Backend API',
+          slug: 'portfolio-backend-api',
+          content: document,
+        },
+        {
+          title: 'Authentication',
+          slug: 'auth',
+          url: '/api/auth/open-api/generate-schema',
+        },
+      ],
+    }),
+  );
 
   const config = app.get<ConfigService<Env, true>>(ConfigService);
 
