@@ -5,7 +5,7 @@ description: Read-only review of the code Oshitha has written so far against the
 
 # review-my-code
 
-Review without editing. Oshitha applies the fixes.
+Review without editing by default. Oshitha applies the fixes. The sole exception is a separately requested Swagger/Scalar documentation edit after Oshitha reviews and explicitly approves the exact proposed changes; follow `.claude/rules/guide-only-workflow.md`. A review request alone does not authorize edits.
 
 ## Procedure
 1. List what changed: `git status --short` (in `portfolio-api`), then read the relevant files in full. Never print `.env` values; check key names only.

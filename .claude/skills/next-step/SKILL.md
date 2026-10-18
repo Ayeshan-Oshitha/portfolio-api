@@ -5,7 +5,7 @@ description: Guide Oshitha through the next step of the 8-day portfolio build. U
 
 # next-step
 
-Drive the build one step at a time. Never write code files; Oshitha types the code.
+Drive the build one step at a time. By default, never write code files; Oshitha types the code. The sole exception is an explicitly requested Swagger/Scalar documentation edit after Oshitha reviews and explicitly approves the exact proposal; follow `.claude/rules/guide-only-workflow.md`.
 
 ## Procedure
 1. **Read state.** Read `../PROGRESS.md` (checklist, log, conventions) and `docs/ARCHITECTURE.md` if needed. Find the first unchecked item.

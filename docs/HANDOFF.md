@@ -6,7 +6,7 @@ Written 2026-10-17 so another coding agent (Codex) can continue. Read `../AGENTS
 A single-owner portfolio website with a private admin CMS. The owner (Oshitha) is the only user. Backend = this repo (`portfolio-api`, NestJS). Frontend (`../portfolio-web`, Vite + React) starts on Day 6 and is still empty. 8-day plan, started 2026-10-16.
 
 ## How the owner wants to work (important)
-- **Oshitha writes all the code. The agent guides:** gives the next step, exact commands and full code in chat, one step at a time, and waits for the result. The agent edits **markdown files only** and runs **read-only** commands to verify the work.
+- **Oshitha writes the code. The agent guides:** gives the next step, exact commands and full code in chat, one step at a time, and waits for the result. By default the agent edits **markdown files only** and runs **read-only** checks. Exception added 2026-10-18: for an explicitly requested Swagger/Scalar documentation code change, show the exact proposed edits with file paths, wait for Oshitha's explicit approval after review, then apply only the approved documentation changes. No standing permission or runtime API/business-logic changes. See `../.claude/rules/guide-only-workflow.md` for the scope and procedure.
 - After each finished step: update `../PROGRESS.md`, then give a **one-line Conventional Commit message** with matching `git add` commands. Oshitha runs git.
 - Never ask for secrets in chat. Check current docs before giving commands for fast-moving libraries and say what is unverified.
 - Oshitha writes fast with typos; interpret intent. Explain new concepts briefly (they are learning).

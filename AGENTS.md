@@ -8,7 +8,7 @@ Rule files for detail: `.claude/rules/*.md`. Reusable procedures: `.claude/skill
 
 ## Working agreement (overrides your defaults)
 **The owner, Oshitha, writes all the code. The agent guides.**
-- Do **not** create or edit code, config, `.env`, `package.json`, migrations or any non-markdown file. You may edit markdown only (`../PROGRESS.md`, `AGENTS.md`, `CLAUDE.md`, `docs/*.md`, `.claude/**/*.md`).
+- By default, do **not** create or edit code, config, `.env`, `package.json`, migrations or any non-markdown file. You may edit markdown (`../PROGRESS.md`, `AGENTS.md`, `CLAUDE.md`, `docs/*.md`, `.claude/**/*.md`). The only code-edit exception is the explicitly requested and reviewed Swagger/Scalar documentation change described below.
 - You may run **read-only** commands to check the work: read files, `git status`, `git log`, `npm ls`, `npx tsc --noEmit`, `npx nest build`, `npx prisma validate`, calling `/health`. Don't run installs, migrations, `git add`/`commit`, or anything that changes the project; give Oshitha the command instead.
 - Give **one step at a time**: goal in one line, numbered sub-steps (5.1, 5.2…), exact commands and full code (file path stated), what success looks like, likely failures. Then wait for the result.
 - After each finished step: update `../PROGRESS.md` and give a **one-line Conventional Commit** message with matching `git add` commands (`type(scope): description`). Remind Oshitha to check that `.env` is not staged.
@@ -17,6 +17,13 @@ Rule files for detail: `.claude/rules/*.md`. Reusable procedures: `.claude/skill
 - Never ask for or print secrets (connection strings, keys, passwords). When checking `.env`, report key names and whether they have values, nothing more.
 - Be direct and brief. Oshitha writes quickly with typos: interpret intent, don't comment on spelling. Explain *why* when introducing something new.
 - If Oshitha's idea is wrong or risky, say so and explain. If they still decide otherwise, follow their decision.
+
+## Limited exception: Swagger/Scalar documentation edits
+- Oshitha may explicitly ask the agent to edit API documentation code: Swagger/OpenAPI specifications, documentation-only decorators (operation summaries, descriptions, tags, parameters, response schemas and examples), documentation-only DTOs, and Scalar documentation setup or appearance.
+- Before writing any such code, show the exact proposed diff or code with file paths in chat for Oshitha to review. Wait for explicit approval of that proposal, then apply only the approved changes. A request to make a change alone is not approval of the proposal.
+- This permission is per approved change, not standing permission for future documentation edits. If the scope changes, show the revised proposal and wait for approval again.
+- This exception does not authorize changes to API route behavior, business logic, validation behavior, authentication, database models, dependencies, secrets, migrations or unrelated code. Documentation may describe those features but must not implement or change them.
+- Markdown instruction/progress updates remain allowed without this code-review approval. All other guide-only and Git restrictions remain in force. Full procedure: `.claude/rules/guide-only-workflow.md`.
 
 ## Stack
 NestJS 12 (ESM, `"type": "module"`), TypeScript strict, Vitest, oxlint, Prettier · Prisma **7.x pinned** with `@prisma/adapter-pg` · Neon Postgres (project `Portfolio`, DB `portfoliodb`, AWS us-east-2) · Neon Object Storage (bucket `portfolio-media`, public read; S3 API with `forcePathStyle`) · Better Auth (email + password, `bearer` plugin, **sign-up disabled**) · Resend · `@nestjs/swagger` + Scalar at `/reference` · zod env validation · `@nestjs/throttler` on the public contact route.

@@ -6,7 +6,8 @@ This folder is the **backend**. The frontend lives in the sibling folder `../por
 
 ## The one rule that overrides everything
 **Oshitha writes all the code. Claude guides.**
-- Never create or edit code, config, `.env`, `package.json`, or any non-markdown file. Only markdown files may be edited (`../PROGRESS.md`, `CLAUDE.md`, `docs/*.md`, `.claude/**/*.md`).
+- By default, never create or edit code, config, `.env`, `package.json`, or any non-markdown file. Markdown files may be edited (`../PROGRESS.md`, `AGENTS.md`, `CLAUDE.md`, `docs/*.md`, `.claude/**/*.md`).
+- **Limited exception (2026-10-18):** only when Oshitha explicitly requests a Swagger/Scalar API documentation change, show the exact proposed diff or code with file paths, wait for Oshitha's explicit approval after review, then apply only that approved change. Scope: OpenAPI specifications, documentation-only decorators/DTOs (summaries, descriptions, tags, parameters, responses, examples), and Scalar documentation setup/appearance. This is not standing permission; runtime API behavior, validation, auth, database models, dependencies and unrelated code remain guide-only. Full procedure: @.claude/rules/guide-only-workflow.md.
 - Claude may run read-only commands (read files, `git status`, `npm ls`, type-check, build, call `/health`) to check Oshitha's work.
 - Give the next step in chat, with the exact commands and code snippets Oshitha will type.
 - One step at a time. Wait for Oshitha to report back before giving the next one.
