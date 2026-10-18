@@ -1,5 +1,28 @@
 # Handoff: where the project stands
 
+## Latest continuation snapshot — 2026-10-18
+
+This snapshot supersedes the historical state and single-owner scope below. Read `AGENTS.md` and `docs/ACCESS-CONTROL.md` from the backend root first.
+
+- PrismaService, global module, lifecycle hooks and database health query are implemented. Health previously verified against Neon `portfoliodb`.
+- Swagger/Scalar is configured at `/api/docs`, using the default theme with dark mode. Health OpenAPI documentation still describes the old raw response and needs to match the new envelope.
+- Better Auth 1.7.10 and `@thallesp/nestjs-better-auth` 2.8.0 installed. `src/auth/auth.ts` exports `createAuth(config, prisma)`, using the Prisma adapter, email/password public signup, admin and bearer plugins, default ordinary-user role and PENDING approval status (`input: false`). Environment keys are validated; do not print secrets.
+- `better-auth.cli.ts` exports the CLI auth instance. Initial `init_auth` migration applied. One admin-role account was confirmed by a read-only count; actual login testing remains pending.
+- `ApprovalStatus` Prisma enum added. Pending migration `20261018115351_add_approval_status_enum` was changed before application to use a transactional in-place cast preserving existing statuses. Owner subsequently ran migration status and reported both migrations applied, database up to date. Generated enums import from `../generated/prisma/enums.js`.
+- AuthModule uses `forRootAsync`, injecting existing ConfigService and PrismaService. `main.ts` sets `bodyParser: false`; the integration supplies non-auth parsing. Health uses `@AllowAnonymous()`.
+- ApprovedUserGuard reads current account role/status from Prisma and permits admin or APPROVED ordinary users; rejects banned accounts. AdminGuard extends it and requires the admin role. Guards are attached to verification endpoints `GET /access/content` and `GET /access/admin`. AdminGuard's `@Injectable()` was added. Current ban check uses the banned flag only, without checking ban expiry.
+- `src/common/` contains response types, PaginatedResult, ApiException, ApiResponseInterceptor and ApiExceptionFilter. Interceptor/filter registered globally through APP_INTERCEPTOR/APP_FILTER. Own JSON responses use `{ success: true, data, meta? }` or `{ success: false, error: { code, message, details } }`; Better Auth is excluded. Error codes are general (FORBIDDEN, UNAUTHORIZED, etc.), not auth-specific. ApiException uses `errorCode`; existing guards may use standard Nest exceptions. Do not manually wrap controller results.
+- TypeScript checking passed before the last suggested commit. At that point the app was unreachable for assistant runtime checks; owner has now reported the response checks work and protected routes return Unauthorized while logged out. Do not claim authenticated role/approval tests have passed.
+- `LEARNING.md` at the backend root is the owner's notebook for commands/concepts. Add future learning notes there when requested.
+
+### Next task
+
+Guide the owner through admin-only user management, starting with the users service and `GET /admin/users` (paginated, explicit safe fields), then `PATCH /admin/users/:id/approval-status` with validation and AdminGuard. Do not expose password hashes, session tokens or other users to ordinary users. Keep admin role and approval separate, and preserve access for the owner. Approved users manage ONLY their own content; admin can manage all content and users. Add ownerId and scoped queries when content modules are built. Public URL/owner selection still needs a decision before public content routes are implemented.
+
+### Working agreement for the new chat
+
+Oshitha writes application code. Provide exact code and commands one step at a time; agents edit markdown and perform read-only verification. The sole code-edit exception is explicitly requested Swagger/Scalar documentation work, after presenting exact changes and receiving explicit approval after review. Agent never runs installs, migrations or Git mutations by default. Offer commit commands after completed steps; user runs them. Check actual Git status before proposing paths. The user said they would commit response work, but the commit itself was not verified. `../PROGRESS.md` is outside the backend Git repo.
+
 > Current access requirements (2026-10-18): approved users manage only their own content; only Oshitha as admin can manage all content, view other users, and change approval status. See docs/ACCESS-CONTROL.md (relative to the backend root). This supersedes historical single-owner and unresolved-permission statements below.
 
 Written 2026-10-17 so another coding agent (Codex) can continue. Read `../AGENTS.md` first (working rules), then this file, then `ARCHITECTURE.md` and `DATA-MODELS.md`. The overall checklist is `../../PROGRESS.md`.

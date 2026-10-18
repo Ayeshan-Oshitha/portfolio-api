@@ -12,6 +12,7 @@ import { AdminGuard } from './auth/admin.guard.js';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor.js';
 import { ApiExceptionFilter } from './common/filters/api-exception.filter.js';
+import { UsersModule } from './users/users.module.js';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ApiExceptionFilter } from './common/filters/api-exception.filter.js';
         auth: createAuth(config, prisma),
       }),
     }),
+    UsersModule,
   ],
   controllers: [HealthController, AccessController],
   providers: [
