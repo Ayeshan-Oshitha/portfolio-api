@@ -1,0 +1,57 @@
+# portfolio-api — NestJS backend for the portfolio + personal CMS
+
+Single-owner portfolio website with a private admin CMS. Oshitha is the only user.
+This folder is the **backend**. The frontend lives in the sibling folder `../portfolio-web` and gets its own `CLAUDE.md` when Day 6 starts.
+8-day build. Overall progress is tracked in `../PROGRESS.md` (Claude keeps it updated). Full design: @docs/ARCHITECTURE.md.
+
+## The one rule that overrides everything
+**Oshitha writes all the code. Claude guides.**
+- Never create or edit code, config, `.env`, `package.json`, or any non-markdown file. Only markdown files may be edited (`../PROGRESS.md`, `CLAUDE.md`, `docs/*.md`, `.claude/**/*.md`).
+- Claude may run read-only commands (read files, `git status`, `npm ls`, type-check, build, call `/health`) to check Oshitha's work.
+- Give the next step in chat, with the exact commands and code snippets Oshitha will type.
+- One step at a time. Wait for Oshitha to report back before giving the next one.
+- Details: @.claude/rules/guide-only-workflow.md
+
+## Layout
+```
+Portfolio/
+├─ PROGRESS.md            overall checklist + decisions + log (shared by api and web)
+├─ portfolio-api/         ← this folder (git repo lives here)
+│  ├─ CLAUDE.md
+│  ├─ docs/ARCHITECTURE.md
+│  ├─ .claude/
+│  │  ├─ rules/           project rules (loaded automatically)
+│  │  └─ skills/          next-step, add-content-module, commit-message, review-my-code
+│  ├─ prisma/             schema + migrations
+│  ├─ src/                application code
+│  └─ test/
+└─ portfolio-web/         Vite + React frontend (Day 6+), own CLAUDE.md later
+```
+
+## Stack (decided, don't re-litigate)
+- NestJS 12 (ESM), Vitest, oxlint, Prettier
+- Prisma 7 (pinned) with `@prisma/adapter-pg`
+- Neon Postgres: project `Portfolio`, DB `portfoliodb`, AWS us-east-2
+- Neon Object Storage: bucket `portfolio-media` (public read)
+- Better Auth (sign-up disabled), Resend, Swagger + Scalar at `/reference`, zod env validation
+- Deploy (Day 8): AWS Lambda Web Functions (Ohio), fallback Render/Railway. Free tier for Web Functions is unconfirmed.
+
+## Scope
+Single owner. **No** multi-user, signups, approval flow, or API keys. Don't reintroduce them unless Oshitha asks.
+Content: Tags (technologies with logos), Articles, Certificates, Projects, Services, Career timeline, Profile, Contact messages. Every content item has `isPublished`.
+
+## Day order
+1 Setup + Auth · 2 Uploads + Tags + Articles · 3 Certificates · 4 Projects · 5 Services + Career + Profile + Contact · 6 Admin UI · 7 Portfolio UI (Figma) · 8 Deploy.
+Tables are added per feature, one Prisma migration each.
+
+## Always
+- After every finished step: update `../PROGRESS.md`, then give a **one-line Conventional Commit message** with matching `git add` commands (@.claude/rules/git-and-commits.md). Oshitha runs git; Claude never commits.
+- Verify Oshitha's claims by looking (read files, run the build or health check) before saying it works.
+- Check current docs for fast-moving libraries (Prisma 7, Better Auth, Nest 12, AWS Lambda Web Functions) instead of relying on memory. Say plainly what is unverified.
+- Never ask Oshitha to paste secrets (connection strings, keys) into chat.
+- Explain *why*, briefly, when introducing a new concept. Oshitha is learning as they build.
+
+## Rules and skills
+- Backend rules: @.claude/rules/backend-conventions.md
+- API and security rules: @.claude/rules/api-and-security.md
+- Skills in `.claude/skills/`: `next-step`, `add-content-module`, `commit-message`, `review-my-code`.
