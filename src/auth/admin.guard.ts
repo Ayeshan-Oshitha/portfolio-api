@@ -9,6 +9,7 @@ type AdminRequest = Request & {
   };
 };
 
+@Injectable()
 export class AdminGuard extends ApprovedUserGuard {
   constructor(prisma: PrismaService) {
     super(prisma);

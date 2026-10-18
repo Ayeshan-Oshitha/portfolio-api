@@ -9,6 +9,9 @@ import { createAuth } from './auth/auth.js';
 import { AccessController } from './auth/access.controller.js';
 import { ApprovedUserGuard } from './auth/approved-user.guard.js';
 import { AdminGuard } from './auth/admin.guard.js';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor.js';
+import { ApiExceptionFilter } from './common/filters/api-exception.filter.js';
 
 @Module({
   imports: [
@@ -26,6 +29,17 @@ import { AdminGuard } from './auth/admin.guard.js';
     }),
   ],
   controllers: [HealthController, AccessController],
-  providers: [ApprovedUserGuard, AdminGuard],
+  providers: [
+    ApprovedUserGuard,
+    AdminGuard,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ApiResponseInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ApiExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}
