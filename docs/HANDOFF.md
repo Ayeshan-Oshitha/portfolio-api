@@ -3,6 +3,8 @@
 Written 2026-10-17 so another coding agent (Codex) can continue. Read `../AGENTS.md` first (working rules), then this file, then `ARCHITECTURE.md` and `DATA-MODELS.md`. The overall checklist is `../../PROGRESS.md`.
 
 ## What this is
+Scope update (2026-10-18): public registration with ordinary users and admin-controlled PENDING/APPROVED/REJECTED status replaces the original single-account/no-sign-up plan below. Oshitha is the admin and can reverse status decisions. Approved-user permissions still need clarification; approval must not grant admin rights. Follow current `AGENTS.md` over historical decisions below.
+
 A single-owner portfolio website with a private admin CMS. The owner (Oshitha) is the only user. Backend = this repo (`portfolio-api`, NestJS). Frontend (`../portfolio-web`, Vite + React) starts on Day 6 and is still empty. 8-day plan, started 2026-10-16.
 
 ## How the owner wants to work (important)

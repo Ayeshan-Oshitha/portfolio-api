@@ -1,6 +1,8 @@
 # API design and security rules
 
 ## Two surfaces
+Scope update (2026-10-18): public registration is required; the older sign-up-disabled rule below is superseded. Ordinary users start PENDING; the admin controls APPROVED/REJECTED/PENDING changes. Approval never grants admin rights. Protect admin operations by role, and approved-only operations by current approval status on each request so status reversals affect existing sessions. Approved-user capabilities still need clarification before those routes are implemented.
+
 | Surface | Path | Auth | Methods | Data |
 |---|---|---|---|---|
 | Admin | `/admin/*` | Better Auth session (`AuthGuard`) | full CRUD + publish toggle | everything |

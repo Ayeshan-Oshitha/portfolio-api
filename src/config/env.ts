@@ -3,10 +3,10 @@ import { z } from 'zod';
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().default(3000),
-
-  // Neon Postgres connection string
   DATABASE_URL: z.string().startsWith('postgres').describe('Neon Postgres connection string'), // pooled - used by the app
   DIRECT_URL: z.string().startsWith('postgres').describe('Neon Postgres connection string'), // direct - used by Prisma migrations
+  BETTER_AUTH_SECRET: z.string().min(32),
+  BETTER_AUTH_URL: z.url(),
 });
 
 export type Env = z.infer<typeof envSchema>;

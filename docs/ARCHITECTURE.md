@@ -53,6 +53,8 @@ Each content module: `x.module.ts`, `x.service.ts` (one service), `admin-x.contr
 - Tag logos: prefer a Simple Icons slug; upload an SVG/PNG only when Simple Icons has none.
 
 ## Auth
+Scope update (2026-10-18): public registration is now required. Oshitha is the admin; other accounts are ordinary users. Add admin-controlled PENDING/APPROVED/REJECTED status, defaulting new registrations to PENDING. Approval does not grant admin rights, and users cannot set their own role/status. The admin may change status later. Approved-user capabilities remain to be clarified before authorization is implemented. This supersedes the original sign-up-disabled description below.
+
 Better Auth with Prisma adapter, email + password, `bearer` plugin, sign-up disabled. A seed script creates the single admin. NestJS wiring (community module vs. small custom controller + guard) is to be verified against current docs on Day 1.
 
 ## Environment variables (names only)

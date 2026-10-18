@@ -38,7 +38,7 @@ Portfolio/
 - Deploy (Day 8): AWS Lambda Web Functions (Ohio), fallback Render/Railway. Free tier for Web Functions is unconfirmed.
 
 ## Scope
-Single owner. **No** multi-user, signups, approval flow, or API keys. Don't reintroduce them unless Oshitha asks.
+Updated 2026-10-18: Oshitha requested public registration, ordinary users and admin-controlled PENDING/APPROVED/REJECTED status. Only the admin changes status; approval does not make users admins. Approved-user capabilities remain to be clarified. This supersedes older single-account/sign-up-disabled statements. The portfolio content still belongs to one owner; multi-tenant content ownership is not requested.
 Content: Tags (technologies with logos), Articles, Certificates, Projects, Services, Career timeline, Profile, Contact messages. Every content item has `isPublished`.
 
 ## Day order

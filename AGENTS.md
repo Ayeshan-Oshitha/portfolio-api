@@ -30,7 +30,7 @@ NestJS 12 (ESM, `"type": "module"`), TypeScript strict, Vitest, oxlint, Prettier
 Deploy (Day 8): AWS Lambda Web Functions (US East Ohio), fallback Render/Railway.
 
 ## Scope
-Single owner. **No** multi-user, signups, approval flow or API keys. Content: Tags (technologies with logos), Articles, Certificates, Projects, Services, Career timeline, Profile, Contact messages. Every content item has `isPublished`. Full field list in `docs/DATA-MODELS.md`.
+Updated 2026-10-18: public registration is enabled. Oshitha is the admin; registrants are ordinary users with approval status PENDING, APPROVED or REJECTED. Only the admin may change approval status, including reversing a previous decision. Users cannot assign their own role/status. Approval does not grant admin rights. What approved users may access is still to be clarified before implementing authorization. This supersedes older single-account/sign-up-disabled statements in the project docs. The portfolio still belongs to one owner; do not infer multi-tenant content ownership. Content: Tags, Articles, Certificates, Projects, Services, Career timeline, Profile, Contact messages. Full field list in `docs/DATA-MODELS.md`.
 
 ## API surface
 - `/admin/*`: requires the Better Auth session (`AuthGuard`); full CRUD plus `PATCH /:id/publish`.
