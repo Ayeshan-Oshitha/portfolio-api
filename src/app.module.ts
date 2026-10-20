@@ -14,6 +14,7 @@ import { ApiResponseInterceptor } from './common/interceptors/api-response.inter
 import { ApiExceptionFilter } from './common/filters/api-exception.filter.js';
 import { UsersModule } from './users/users.module.js';
 import { StorageModule } from './storage/storage.module.js';
+import { MediaModule } from './media/media.module.js';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { StorageModule } from './storage/storage.module.js';
     }),
     UsersModule,
     StorageModule,
+    MediaModule,
   ],
   controllers: [HealthController, AccessController],
   providers: [

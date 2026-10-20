@@ -7,12 +7,12 @@ export const envSchema = z.object({
   DIRECT_URL: z.string().startsWith('postgres').describe('Neon Postgres connection string'), // direct - used by Prisma migrations
   BETTER_AUTH_SECRET: z.string().min(32),
   BETTER_AUTH_URL: z.url(),
-  AWS_ENDPOINT_URL_S3: z.url(),
-  AWS_REGION: z.string().default('us-east-2'),
-  AWS_S3_BUCKET: z.string().min(1),
-  AWS_ACCESS_KEY_ID: z.string().min(1),
-  AWS_SECRET_ACCESS_KEY: z.string().min(1),
-  AWS_S3_PUBLIC_URL: z.url(),
+  S3_ENDPOINT: z.url(),
+  S3_REGION: z.string().default('us-east-2'),
+  S3_BUCKET: z.string().min(1),
+  S3_ACCESS_KEY_ID: z.string().min(1),
+  S3_SECRET_ACCESS_KEY: z.string().min(1),
+  S3_PUBLIC_URL: z.url(),
 });
 
 export type Env = z.infer<typeof envSchema>;

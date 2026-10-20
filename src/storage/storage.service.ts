@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  HeadObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'node:crypto';
 import type { Env } from '../config/env.js';
@@ -12,15 +17,15 @@ export class StorageService {
   private readonly publicUrl: string;
 
   constructor(config: ConfigService<Env, true>) {
-    this.bucket = config.get('AWS_S3_BUCKET', { infer: true });
-    this.publicUrl = config.get('AWS_S3_PUBLIC_URL', { infer: true });
+    this.bucket = config.get('S3_BUCKET', { infer: true });
+    this.publicUrl = config.get('S3_PUBLIC_URL', { infer: true }).replace(/\/+$/, '');
     this.s3 = new S3Client({
-      endpoint: config.get('AWS_ENDPOINT_URL_S3', { infer: true }),
-      region: config.get('AWS_REGION', { infer: true }),
+      endpoint: config.get('S3_ENDPOINT', { infer: true }),
+      region: config.get('S3_REGION', { infer: true }),
       forcePathStyle: true,
       credentials: {
-        accessKeyId: config.get('AWS_ACCESS_KEY_ID', { infer: true }),
-        secretAccessKey: config.get('AWS_SECRET_ACCESS_KEY', { infer: true }),
+        accessKeyId: config.get('S3_ACCESS_KEY_ID', { infer: true }),
+        secretAccessKey: config.get('S3_SECRET_ACCESS_KEY', { infer: true }),
       },
     });
   }
@@ -48,5 +53,16 @@ export class StorageService {
 
   public getPublicUrl(key: string): string {
     return `${this.publicUrl}/${key}`;
+  }
+
+  // Returns real size/type of an uploaded object, or null if it does not exist.
+  async headObject(key: string): Promise<{ size: number; contentType: string } | null> {
+    try {
+      const res = await this.s3.send(new HeadObjectCommand({ Bucket: this.bucket, Key: key }));
+      return { size: res.ContentLength ?? 0, contentType: res.ContentType ?? '' };
+    } catch (error) {
+      if ((error as { name?: string }).name === 'NotFound') return null;
+      throw error;
+    }
   }
 }

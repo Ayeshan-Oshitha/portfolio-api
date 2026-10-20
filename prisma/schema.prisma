@@ -33,6 +33,7 @@ model User {
   approvalStatus ApprovalStatus @default(PENDING)
   sessions       Session[]
   accounts       Account[]
+  media          Media[]
 
   @@unique([email])
   @@map("user")
@@ -85,4 +86,18 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Media {
+  id           String   @id @default(cuid())
+  key          String   @unique
+  contentType  String
+  size         Int
+  originalName String
+  ownerId      String
+  owner        User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+
+  @@index([ownerId])
+  @@map("media")
 }

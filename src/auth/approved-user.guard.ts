@@ -9,7 +9,7 @@ import type { Request } from 'express';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ApprovalStatus } from '../generated/prisma/enums.js';
 
-type CurrentUser = {
+export type CurrentUser = {
   id: string;
   email: string;
   role: string | null;
