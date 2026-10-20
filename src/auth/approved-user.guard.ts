@@ -40,6 +40,7 @@ export class ApprovedUserGuard implements CanActivate {
         role: true,
         approvalStatus: true,
         banned: true,
+        banExpires: true,
       },
     });
 
@@ -47,7 +48,10 @@ export class ApprovedUserGuard implements CanActivate {
       throw new UnauthorizedException('User not found.');
     }
 
-    if (dbUser.banned) {
+    const banIsActive =
+      dbUser.banned === true && (!dbUser.banExpires || dbUser.banExpires > new Date());
+
+    if (banIsActive) {
       throw new ForbiddenException('Account is banned');
     }
 
