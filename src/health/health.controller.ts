@@ -15,14 +15,21 @@ export class HealthController {
     description: 'Application and database are available',
     schema: {
       type: 'object',
-      required: ['status', 'db', 'timestamp'],
+      required: ['success', 'data'],
       properties: {
-        status: { type: 'string', example: 'ok' },
-        db: { type: 'string', example: 'connected' },
-        timestamp: {
-          type: 'string',
-          format: 'date-time',
-          example: '2026-10-18T06:00:00.000Z',
+        success: { type: 'boolean', example: true },
+        data: {
+          type: 'object',
+          required: ['status', 'db', 'timestamp'],
+          properties: {
+            status: { type: 'string', example: 'ok' },
+            db: { type: 'string', example: 'connected' },
+            timestamp: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-10-20T06:00:00.000Z',
+            },
+          },
         },
       },
     },
