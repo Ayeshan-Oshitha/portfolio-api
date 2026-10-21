@@ -15,6 +15,8 @@ import { ApiExceptionFilter } from './common/filters/api-exception.filter.js';
 import { UsersModule } from './users/users.module.js';
 import { StorageModule } from './storage/storage.module.js';
 import { MediaModule } from './media/media.module.js';
+import { TagsModule } from './tags/tags.module.js';
+import { ArticlesModule } from './articles/articles.module.js';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { MediaModule } from './media/media.module.js';
     UsersModule,
     StorageModule,
     MediaModule,
+    TagsModule,
+    ArticlesModule,
   ],
   controllers: [HealthController, AccessController],
   providers: [
