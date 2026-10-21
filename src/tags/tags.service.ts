@@ -85,7 +85,8 @@ export class TagsService {
       if (error.code === 'P2002')
         throw new ConflictException('A tag with this name or slug already exists');
       if (error.code === 'P2003')
-        throw new ConflictException('Tag is still used by articles or projects');
+        throw new ConflictException('Tag is still used by articles, projects or services');
+
       if (error.code === 'P2025') throw new NotFoundException('Tag not found');
     }
     throw error;
