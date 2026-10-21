@@ -23,6 +23,11 @@ enum ArticleCategory {
   PERSONAL
 }
 
+enum CertificateType {
+  EXAM
+  COURSE
+}
+
 model User {
   id             String         @id
   name           String
@@ -41,6 +46,7 @@ model User {
   media          Media[]
   articles       Article[]
   projects       Project[]
+  certificates   Certificate[]
 
   @@unique([email])
   @@map("user")
@@ -96,18 +102,20 @@ model Verification {
 }
 
 model Media {
-  id            String         @id @default(cuid())
-  key           String         @unique
-  contentType   String
-  size          Int
-  originalName  String
-  ownerId       String
-  owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  createdAt     DateTime       @default(now())
-  tagIcons      Tag[]
-  articles      Article[]
-  projectCovers Project[]
-  projectImages ProjectImage[]
+  id               String         @id @default(cuid())
+  key              String         @unique
+  contentType      String
+  size             Int
+  originalName     String
+  ownerId          String
+  owner            User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+  tagIcons         Tag[]
+  articles         Article[]
+  projectCovers    Project[]
+  projectImages    ProjectImage[]
+  certificateFiles Certificate[]  @relation("CertificateFile")
+  certificateLogos Certificate[]  @relation("CertificateLogo")
 
   @@index([ownerId])
   @@map("media")
@@ -219,4 +227,32 @@ model ProjectTag {
   @@id([projectId, tagId])
   @@index([tagId])
   @@map("project_tag")
+}
+
+model Certificate {
+  id                String          @id @default(cuid())
+  title             String
+  type              CertificateType
+  issuer            String
+  issueDate         DateTime?
+  expiryDate        DateTime?
+  credentialId      String?
+  credentialUrl     String?
+  description       String?
+  fileMediaId       String?
+  fileMedia         Media?          @relation("CertificateFile", fields: [fileMediaId], references: [id], onDelete: SetNull)
+  issuerLogoMediaId String?
+  issuerLogoMedia   Media?          @relation("CertificateLogo", fields: [issuerLogoMediaId], references: [id], onDelete: SetNull)
+  isFeatured        Boolean         @default(false)
+  sortOrder         Int             @default(0)
+  isPublished       Boolean         @default(false)
+  publishedAt       DateTime?
+  ownerId           String
+  owner             User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([ownerId])
+  @@index([isPublished, type, isFeatured, sortOrder])
+  @@map("certificate")
 }
