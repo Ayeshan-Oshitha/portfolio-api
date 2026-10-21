@@ -65,7 +65,7 @@ export class AdminTagsController {
   @ApiOperation({ summary: 'Delete a tag' })
   @ApiOkResponse({ description: 'Tag deleted' })
   @ApiNotFoundResponse({ description: 'Tag not found' })
-  @ApiConflictResponse({ description: 'Tag is still used by articles' })
+  @ApiConflictResponse({ description: 'Tag is still used by articles or projects' })
   // Delete a tag (admin only).
   remove(@Param('id') id: string) {
     return this.tagsService.remove(id);

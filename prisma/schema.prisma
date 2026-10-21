@@ -35,6 +35,7 @@ model User {
   accounts       Account[]
   media          Media[]
   articles       Article[]
+  projects       Project[]
 
   @@unique([email])
   @@map("user")
@@ -90,16 +91,18 @@ model Verification {
 }
 
 model Media {
-  id           String    @id @default(cuid())
-  key          String    @unique
-  contentType  String
-  size         Int
-  originalName String
-  ownerId      String
-  owner        User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  createdAt    DateTime  @default(now())
-  tagIcons     Tag[]
-  articles     Article[]
+  id            String         @id @default(cuid())
+  key           String         @unique
+  contentType   String
+  size          Int
+  originalName  String
+  ownerId       String
+  owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt     DateTime       @default(now())
+  tagIcons      Tag[]
+  articles      Article[]
+  projectCovers Project[]
+  projectImages ProjectImage[]
 
   @@index([ownerId])
   @@map("media")
@@ -117,6 +120,7 @@ model Tag {
   updatedAt   DateTime     @updatedAt
   articles    Article[]
   articleTags ArticleTag[]
+  projects    ProjectTag[]
 
   @@map("tag")
 }
@@ -154,4 +158,57 @@ model ArticleTag {
   @@id([articleId, tagId])
   @@index([tagId])
   @@map("article_tag")
+}
+
+model Project {
+  id           String         @id @default(cuid())
+  title        String
+  slug         String
+  summary      String?
+  description  String?
+  liveUrl      String?
+  repoUrl      String?
+  startDate    DateTime?
+  endDate      DateTime?
+  isFeatured   Boolean        @default(false)
+  sortOrder    Int            @default(0)
+  coverMediaId String?
+  coverMedia   Media?         @relation(fields: [coverMediaId], references: [id], onDelete: SetNull)
+  images       ProjectImage[]
+  tags         ProjectTag[]
+  isPublished  Boolean        @default(false)
+  publishedAt  DateTime?
+  ownerId      String
+  owner        User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@unique([ownerId, slug])
+  @@index([ownerId])
+  @@index([isPublished, isFeatured, sortOrder])
+  @@map("project")
+}
+
+model ProjectImage {
+  projectId String
+  mediaId   String
+  position  Int
+  caption   String?
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  media     Media   @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, mediaId])
+  @@index([mediaId])
+  @@map("project_image")
+}
+
+model ProjectTag {
+  projectId String
+  tagId     String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Restrict)
+
+  @@id([projectId, tagId])
+  @@index([tagId])
+  @@map("project_tag")
 }
