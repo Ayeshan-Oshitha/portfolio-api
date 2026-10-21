@@ -1,4 +1,13 @@
-import { Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  DefaultValuePipe,
+  Get,
+  Param,
+  ParseBoolPipe,
+  ParseEnumPipe,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 import {
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -8,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { ArticlesService } from './articles.service.js';
+import { ArticleCategory } from '../generated/prisma/enums.js';
 
 @AllowAnonymous()
 @ApiTags('Public articles')
@@ -24,14 +34,19 @@ export class PublicArticlesController {
     schema: { type: 'integer', minimum: 1, maximum: 50, default: 10 },
   })
   @ApiQuery({ name: 'tag', required: false, description: 'Tag slug, e.g. react' })
+  @ApiQuery({ name: 'category', required: false, enum: ArticleCategory })
+  @ApiQuery({ name: 'featured', required: false, type: Boolean })
   @ApiOkResponse({ description: 'Paginated published articles (without content)' })
-  // Get published articles from all users, newest first.
+  // Get published articles, featured first, optionally filtered.
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
     @Query('tag') tag?: string,
+    @Query('category', new ParseEnumPipe(ArticleCategory, { optional: true }))
+    category?: ArticleCategory,
+    @Query('featured', new ParseBoolPipe({ optional: true })) featured?: boolean,
   ) {
-    return this.articlesService.findPublished(page, limit, tag);
+    return this.articlesService.findPublished(page, limit, tag, category, featured);
   }
 
   @Get(':id')

@@ -17,6 +17,7 @@ import { StorageModule } from './storage/storage.module.js';
 import { MediaModule } from './media/media.module.js';
 import { TagsModule } from './tags/tags.module.js';
 import { ArticlesModule } from './articles/articles.module.js';
+import { ProjectsModule } from './projects/projects.module.js';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ArticlesModule } from './articles/articles.module.js';
     MediaModule,
     TagsModule,
     ArticlesModule,
+    ProjectsModule,
   ],
   controllers: [HealthController, AccessController],
   providers: [

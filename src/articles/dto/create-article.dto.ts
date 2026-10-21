@@ -3,12 +3,15 @@ import {
   ArrayMaxSize,
   ArrayUnique,
   IsArray,
+  IsBoolean,
+  IsEnum,
   IsOptional,
   IsString,
   Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { ArticleCategory } from '../../generated/prisma/enums.js';
 
 export class CreateArticleDto {
   @ApiProperty({ example: 'Building a CMS with NestJS' })
@@ -41,4 +44,14 @@ export class CreateArticleDto {
   @ArrayUnique()
   @IsString({ each: true })
   tagIds?: string[];
+
+  @ApiPropertyOptional({ enum: ArticleCategory, default: ArticleCategory.TECH })
+  @IsOptional()
+  @IsEnum(ArticleCategory)
+  category?: ArticleCategory;
+
+  @ApiPropertyOptional({ default: false, description: 'Show on the homepage' })
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
 }

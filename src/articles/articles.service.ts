@@ -12,6 +12,7 @@ import { Prisma } from '../generated/prisma/client.js';
 import type { CurrentUser } from '../auth/approved-user.guard.js';
 import type { CreateArticleDto } from './dto/create-article.dto.js';
 import type { UpdateArticleDto } from './dto/update-article.dto.js';
+import type { ArticleCategory } from '../generated/prisma/enums.js';
 
 const articleInclude = {
   coverMedia: { select: { key: true } },
@@ -138,7 +139,13 @@ export class ArticlesService {
   }
 
   // Public: list published articles from all users, newest first, optionally by tag slug.
-  public async findPublished(page: number, limit: number, tagSlug?: string) {
+  public async findPublished(
+    page: number,
+    limit: number,
+    tagSlug?: string,
+    category?: ArticleCategory,
+    featured?: boolean,
+  ) {
     if (!Number.isSafeInteger(page) || page < 1) {
       throw new BadRequestException('Page must be a positive integer');
     }
@@ -148,6 +155,8 @@ export class ArticlesService {
 
     const where: Prisma.ArticleWhereInput = {
       isPublished: true,
+      ...(category ? { category } : {}),
+      ...(featured ? { isFeatured: true } : {}),
       ...(tagSlug ? { tags: { some: { tag: { slug: tagSlug } } } } : {}),
     };
     const [items, total] = await this.prisma.$transaction([
@@ -157,7 +166,7 @@ export class ArticlesService {
         omit: { content: true },
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: [{ publishedAt: 'desc' }, { id: 'desc' }],
+        orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }, { id: 'desc' }],
       }),
       this.prisma.article.count({ where }),
     ]);
