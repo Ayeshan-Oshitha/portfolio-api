@@ -21,6 +21,11 @@ const articleInclude = {
 } satisfies Prisma.ArticleInclude;
 type ArticleWithRelations = Prisma.ArticleGetPayload<{ include: typeof articleInclude }>;
 
+const publicArticleInclude = {
+  ...articleInclude,
+  owner: { select: { id: true, name: true, image: true } },
+} satisfies Prisma.ArticleInclude;
+
 @Injectable()
 export class ArticlesService {
   constructor(
@@ -130,6 +135,54 @@ export class ArticlesService {
     await this.assertOwnArticle(user, id);
     await this.prisma.article.delete({ where: { id } });
     return { id };
+  }
+
+  // Public: list published articles from all users, newest first, optionally by tag slug.
+  public async findPublished(page: number, limit: number, tagSlug?: string) {
+    if (!Number.isSafeInteger(page) || page < 1) {
+      throw new BadRequestException('Page must be a positive integer');
+    }
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 50) {
+      throw new BadRequestException('Limit must be between 1 and 50');
+    }
+
+    const where: Prisma.ArticleWhereInput = {
+      isPublished: true,
+      ...(tagSlug ? { tags: { some: { tag: { slug: tagSlug } } } } : {}),
+    };
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.article.findMany({
+        where,
+        include: publicArticleInclude,
+        omit: { content: true },
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: [{ publishedAt: 'desc' }, { id: 'desc' }],
+      }),
+      this.prisma.article.count({ where }),
+    ]);
+
+    return new PaginatedResult(
+      items.map(({ owner, ...a }) => ({
+        ...this.toResponse({ ...a, content: '' }),
+        content: undefined,
+        author: owner,
+      })),
+      { page, limit, total, totalPages: Math.ceil(total / limit) },
+    );
+  }
+
+  // Public: get one published article with its full content.
+  public async findPublishedOne(id: string) {
+    const article = await this.prisma.article.findFirst({
+      where: { id, isPublished: true },
+      include: publicArticleInclude,
+    });
+    if (!article) {
+      throw new NotFoundException('Article not found');
+    }
+    const { owner, ...rest } = article;
+    return { ...this.toResponse(rest), author: owner };
   }
 
   // Build a slug from the title that the user hasn't used yet (adds -2, -3, ... if needed).

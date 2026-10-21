@@ -1,27 +1,30 @@
-# Roles, approval and content ownership
+# Access control
 
-Confirmed by Oshitha on 2026-10-18. This replaces the original single-owner/no-sign-up plan and the earlier unresolved approved-user permissions. These are requirements, not a claim that authorization has been implemented.
+## Current model — used by one person, multi-user ready (decided 2026-10-21)
 
-## Access rules
+Oshitha is the only person using the CMS for now. The multi-user code from 2026-10-18 is **kept as-is** so multi-user can be switched on later without a rewrite.
+
+- Code stays: approval status (PENDING/APPROVED/REJECTED), `ApprovedUserGuard`, `AdminGuard`, `/admin/users` endpoints, `ownerId` on content, owner-scoped queries.
+- Owner (admin role) passes `ApprovedUserGuard` automatically, so day-to-day it behaves like a single-owner CMS.
+- Recommended: public sign-up turned off (`disableSignUp: true` in `src/auth/auth.ts`) until multi-user is wanted. Flip back to `false` to reopen registration.
+- Regular content routes (`/media`, `/articles`) are owner-only for everyone, admin included. Admin "see all" routes (`/admin/...`) are deferred until multi-user is needed.
+- Public routes: `/tags`, `/public/articles`, `/public/articles/:id` — read-only, published-only. Public articles are addressed by ID.
+- New content modules keep the same pattern: `ownerId` set from the session, queries scoped by `ownerId`, `ApprovedUserGuard` on CMS routes.
+
+## Rules for when multi-user is turned on
 
 | Account | Manage content | View/manage other users | Change approval status |
 |---|---|---|---|
-| Admin (Oshitha) | All owners' content | Yes | Yes |
-| APPROVED user | Own content only: create, list, read, update, delete and publish | No | No |
-| PENDING or REJECTED user | No protected content-management access | No | No |
+| Admin (Oshitha) | Own content via normal routes; all content via future `/admin/...` routes | Yes | Yes |
+| APPROVED user | Own content only | No | No |
+| PENDING or REJECTED user | None | No | No |
 
-Approval does not change a user into an admin. Ordinary users may see their own account information and approval status, but not the user directory or other accounts' private data. Public portfolio reading remains separate from protected CMS access; published-content URLs and which owners appear publicly still need a decision.
+- Set `ownerId` from the session, never from the request body.
+- Users must not attach or delete another owner's media.
+- Profile becomes one per owner (`ownerId` unique) when built.
 
-## Required implementation
+## History
 
-- Authenticate protected requests. Check current role and approval state server-side, including existing sessions after a status reversal.
-- Add a required `ownerId` relation to User for each user-owned content model as it is implemented. Set ownership from the authenticated session on creation, never from an ordinary user's request body.
-- For ordinary users, scope list, detail, update, delete and publish database operations to their own `ownerId`. An approved account alone must never unlock unrestricted content access.
-- Admins may access all owners' content, but only through separate `/admin/...` endpoints guarded by `AdminGuard` (added later, per feature). Regular content routes (e.g. `/media`) are owner-only for everyone, admin included (decided 2026-10-20). Keep user listing, role management and approval updates admin-only.
-- Apply ownership checks to related records, uploads and private contact inboxes as those features are added. Users must not attach another owner's private records or replace/delete another owner's files.
-- Replace the global Profile singleton with one profile per owner (`ownerId` unique). Scope other unique identifiers, such as slugs, according to the chosen public URL design before their migrations.
-- Pending/rejected users may inspect their own status but cannot manage content. Exact login restrictions and public URL structure remain to be decided; do not assume pending/rejected means an admin role change.
-
-## Next development step
-
-Implement and verify authenticated role/approval checks and admin-only user approval management before adding content modules. Add content ownership fields and query restrictions with each feature's migration. Login testing is still pending.
+- 2026-10-16: single owner, sign-up disabled.
+- 2026-10-18: public registration with approval and owner-scoped content (built with Codex).
+- 2026-10-21: used as single owner; multi-user code kept for the future.
