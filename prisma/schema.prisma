@@ -34,6 +34,7 @@ model User {
   sessions       Session[]
   accounts       Account[]
   media          Media[]
+  articles       Article[]
 
   @@unique([email])
   @@map("user")
@@ -89,30 +90,68 @@ model Verification {
 }
 
 model Media {
-  id           String   @id @default(cuid())
-  key          String   @unique
+  id           String    @id @default(cuid())
+  key          String    @unique
   contentType  String
   size         Int
   originalName String
   ownerId      String
-  owner        User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
+  owner        User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
   tagIcons     Tag[]
+  articles     Article[]
 
   @@index([ownerId])
   @@map("media")
 }
 
 model Tag {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  slug        String   @unique
+  id          String       @id @default(cuid())
+  name        String       @unique
+  slug        String       @unique
   iconSlug    String?
   color       String?
   iconMediaId String?
-  iconMedia   Media?   @relation(fields: [iconMediaId], references: [id], onDelete: SetNull)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  iconMedia   Media?       @relation(fields: [iconMediaId], references: [id], onDelete: SetNull)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  articles    Article[]
+  articleTags ArticleTag[]
 
   @@map("tag")
+}
+
+model Article {
+  id           String       @id @default(cuid())
+  title        String
+  slug         String
+  excerpt      String?
+  content      String
+  coverMediaId String?
+  coverMedia   Media?       @relation(fields: [coverMediaId], references: [id], onDelete: SetNull)
+  tags         ArticleTag[]
+  isPublished  Boolean      @default(false)
+  publishedAt  DateTime?
+  ownerId      String
+  owner        User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  tag          Tag?         @relation(fields: [tagId], references: [id])
+  tagId        String?
+
+  @@unique([ownerId, slug])
+  @@index([ownerId])
+  @@index([isPublished, publishedAt])
+  @@map("article")
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Restrict)
+
+  @@id([articleId, tagId])
+  @@index([tagId])
+  @@map("article_tag")
 }
