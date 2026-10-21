@@ -18,6 +18,7 @@ import { MediaModule } from './media/media.module.js';
 import { TagsModule } from './tags/tags.module.js';
 import { ArticlesModule } from './articles/articles.module.js';
 import { ProjectsModule } from './projects/projects.module.js';
+import { CertificatesModule } from './certificates/certificates.module.js';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ProjectsModule } from './projects/projects.module.js';
     TagsModule,
     ArticlesModule,
     ProjectsModule,
+    CertificatesModule,
   ],
   controllers: [HealthController, AccessController],
   providers: [
