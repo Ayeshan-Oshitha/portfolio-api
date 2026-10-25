@@ -13,6 +13,9 @@ export const envSchema = z.object({
   S3_ACCESS_KEY_ID: z.string().min(1),
   S3_SECRET_ACCESS_KEY: z.string().min(1),
   S3_PUBLIC_URL: z.url(),
+  RESEND_API_KEY: z.string().startsWith('re_'),
+  RESEND_FROM: z.string().min(3),
+  CONTACT_NOTIFY_TO: z.email(),
 });
 
 export type Env = z.infer<typeof envSchema>;
