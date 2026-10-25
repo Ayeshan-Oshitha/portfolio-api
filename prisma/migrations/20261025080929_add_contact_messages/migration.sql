@@ -1,0 +1,18 @@
+-- CreateTable
+CREATE TABLE "contact_message" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "subject" TEXT,
+    "message" TEXT NOT NULL,
+    "isRead" BOOLEAN NOT NULL DEFAULT false,
+    "emailSent" BOOLEAN NOT NULL DEFAULT false,
+    "ipAddress" TEXT,
+    "userAgent" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "contact_message_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE INDEX "contact_message_isRead_createdAt_idx" ON "contact_message"("isRead", "createdAt");

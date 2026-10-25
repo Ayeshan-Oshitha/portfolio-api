@@ -20,6 +20,8 @@ import { ArticlesModule } from './articles/articles.module.js';
 import { ProjectsModule } from './projects/projects.module.js';
 import { CertificatesModule } from './certificates/certificates.module.js';
 import { ServicesModule } from './services/services.module.js';
+import { MailModule } from './mail/mail.module.js';
+import { ContactModule } from './contact/contact.module.js';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { ServicesModule } from './services/services.module.js';
     ProjectsModule,
     CertificatesModule,
     ServicesModule,
+    MailModule,
+    ContactModule,
   ],
   controllers: [HealthController, AccessController],
   providers: [
