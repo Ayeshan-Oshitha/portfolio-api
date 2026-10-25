@@ -146,7 +146,8 @@ model Article {
   title        String
   slug         String
   excerpt      String?
-  content      String
+  content      String?
+  externalUrl  String?
   coverMediaId String?
   coverMedia   Media?          @relation(fields: [coverMediaId], references: [id], onDelete: SetNull)
   tags         ArticleTag[]

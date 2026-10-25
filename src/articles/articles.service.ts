@@ -37,6 +37,7 @@ export class ArticlesService {
   // Create a draft article owned by the current user; the slug is generated from the title.
   public async create(user: CurrentUser, dto: CreateArticleDto) {
     const { tagIds, ...data } = dto;
+    this.assertContentOrLink(data.content, data.externalUrl);
     await this.assertOwnMedia(user, data.coverMediaId);
     await this.assertTagsExist(tagIds);
 
@@ -97,8 +98,19 @@ export class ArticlesService {
 
   // Update fields; if tagIds is sent, it replaces all current tags. Title changes keep the slug.
   public async update(user: CurrentUser, id: string, dto: UpdateArticleDto) {
-    await this.assertOwnArticle(user, id);
+    const existing = await this.prisma.article.findFirst({
+      where: { id, ownerId: user.id },
+      select: { content: true, externalUrl: true },
+    });
+    if (!existing) {
+      throw new NotFoundException('Article not found');
+    }
     const { tagIds, ...data } = dto;
+    this.assertContentOrLink(
+      data.content === undefined ? existing.content : data.content,
+      data.externalUrl === undefined ? existing.externalUrl : data.externalUrl,
+    );
+
     await this.assertOwnMedia(user, data.coverMediaId);
     await this.assertTagsExist(tagIds);
 
@@ -173,8 +185,7 @@ export class ArticlesService {
 
     return new PaginatedResult(
       items.map(({ owner, ...a }) => ({
-        ...this.toResponse({ ...a, content: '' }),
-        content: undefined,
+        ...this.toResponse({ ...a, content: null }),
         author: owner,
       })),
       { page, limit, total, totalPages: Math.ceil(total / limit) },
@@ -246,6 +257,13 @@ export class ArticlesService {
       coverUrl: coverMedia ? this.storage.getPublicUrl(coverMedia.key) : null,
       tags: tags.map((t) => t.tag),
     };
+  }
+
+  // An article needs its own content or an external (e.g. Medium) link.
+  private assertContentOrLink(content?: string | null, externalUrl?: string | null) {
+    if (!content && !externalUrl) {
+      throw new BadRequestException('Add article content or an external URL');
+    }
   }
 
   // Turn Prisma errors into HTTP errors.
