@@ -19,6 +19,7 @@ import { TagsModule } from './tags/tags.module.js';
 import { ArticlesModule } from './articles/articles.module.js';
 import { ProjectsModule } from './projects/projects.module.js';
 import { CertificatesModule } from './certificates/certificates.module.js';
+import { ServicesModule } from './services/services.module.js';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CertificatesModule } from './certificates/certificates.module.js';
     ArticlesModule,
     ProjectsModule,
     CertificatesModule,
+    ServicesModule,
   ],
   controllers: [HealthController, AccessController],
   providers: [
