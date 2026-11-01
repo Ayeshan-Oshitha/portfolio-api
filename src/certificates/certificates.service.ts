@@ -14,9 +14,8 @@ const certificateInclude = {
 } satisfies Prisma.CertificateInclude;
 type CertificateWithMedia = Prisma.CertificateGetPayload<{ include: typeof certificateInclude }>;
 
-// Featured first, then your sortOrder, then newest issue date.
+// Your drag-and-drop sortOrder, then newest issue date.
 const displayOrder: Prisma.CertificateOrderByWithRelationInput[] = [
-  { isFeatured: 'desc' },
   { sortOrder: 'asc' },
   { issueDate: { sort: 'desc', nulls: 'last' } },
   { id: 'desc' },
@@ -233,6 +232,18 @@ export class CertificatesService {
       issuerLogoUrl: issuerLogoMedia ? this.storage.getPublicUrl(issuerLogoMedia.key) : null,
       isExpired: certificate.expiryDate ? certificate.expiryDate < new Date() : false,
     };
+  }
+
+  // Save a new display order: ids[0] gets sortOrder 0, ids[1] gets 1, …
+  public async reorder(user: CurrentUser, ids: string[]) {
+    const owned = await this.prisma.certificate.count({ where: { id: { in: ids }, ownerId: user.id } });
+    if (owned !== ids.length) {
+      throw new BadRequestException('Some items are not yours or no longer exist');
+    }
+    await this.prisma.$transaction(
+      ids.map((id, i) => this.prisma.certificate.update({ where: { id }, data: { sortOrder: i } })),
+    );
+    return { count: ids.length };
   }
 
   // Turn Prisma errors into HTTP errors.

@@ -11,6 +11,7 @@ export function createAuth(config: ConfigService<Env, true>, prisma: PrismaServi
     secret: config.get('BETTER_AUTH_SECRET', { infer: true }),
     baseURL: config.get('BETTER_AUTH_URL', { infer: true }),
     basePath: '/api/auth',
+    trustedOrigins: config.get('FRONTEND_URLS', { infer: true }).split(','),
 
     database: prismaAdapter(prisma, {
       provider: 'postgresql',

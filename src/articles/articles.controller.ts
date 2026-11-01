@@ -29,6 +29,7 @@ import {
   type CurrentUser as CurrentUserType,
 } from '../auth/approved-user.guard.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
+import { ReorderDto } from '../common/dto/reorder.dto.js';
 import { ArticlesService } from './articles.service.js';
 import { CreateArticleDto } from './dto/create-article.dto.js';
 import { UpdateArticleDto } from './dto/update-article.dto.js';
@@ -78,6 +79,14 @@ export class ArticlesController {
   // Get one of your articles.
   findOne(@CurrentUser() user: CurrentUserType, @Param('id') id: string) {
     return this.articlesService.findOne(user, id);
+  }
+
+  @Patch('reorder')
+  @ApiOperation({ summary: 'Set the display order of your articles' })
+  @ApiOkResponse({ description: '{ count }' })
+  // Save the order from drag and drop.
+  reorder(@CurrentUser() user: CurrentUserType, @Body() dto: ReorderDto) {
+    return this.articlesService.reorder(user, dto.ids);
   }
 
   @Patch(':id')

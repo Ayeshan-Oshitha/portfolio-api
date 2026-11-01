@@ -28,6 +28,7 @@ import {
   type CurrentUser as CurrentUserType,
 } from '../auth/approved-user.guard.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
+import { ReorderDto } from '../common/dto/reorder.dto.js';
 import { CertificatesService } from './certificates.service.js';
 import { CreateCertificateDto } from './dto/create-certificate.dto.js';
 import { UpdateCertificateDto } from './dto/update-certificate.dto.js';
@@ -76,6 +77,14 @@ export class CertificatesController {
   // Get one of your certificates.
   findOne(@CurrentUser() user: CurrentUserType, @Param('id') id: string) {
     return this.certificatesService.findOne(user, id);
+  }
+
+  @Patch('reorder')
+  @ApiOperation({ summary: 'Set the display order of your certificates' })
+  @ApiOkResponse({ description: '{ count }' })
+  // Save the order from drag and drop.
+  reorder(@CurrentUser() user: CurrentUserType, @Body() dto: ReorderDto) {
+    return this.certificatesService.reorder(user, dto.ids);
   }
 
   @Patch(':id')

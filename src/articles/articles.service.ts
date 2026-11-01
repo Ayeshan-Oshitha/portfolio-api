@@ -73,7 +73,7 @@ export class ArticlesService {
         include: articleInclude,
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+        orderBy: [{ sortOrder: 'asc' }, { createdAt: 'desc' }, { id: 'desc' }],
       }),
       this.prisma.article.count({ where }),
     ]);
@@ -150,7 +150,7 @@ export class ArticlesService {
     return { id };
   }
 
-  // Public: list published articles from all users, newest first, optionally by tag slug.
+  // Public: list published articles from all users in your chosen order (then newest), optionally by tag slug.
   public async findPublished(
     page: number,
     limit: number,
@@ -178,7 +178,7 @@ export class ArticlesService {
         omit: { content: true },
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }, { id: 'desc' }],
+        orderBy: [{ sortOrder: 'asc' }, { publishedAt: 'desc' }, { id: 'desc' }],
       }),
       this.prisma.article.count({ where }),
     ]);
@@ -264,6 +264,18 @@ export class ArticlesService {
     if (!content && !externalUrl) {
       throw new BadRequestException('Add article content or an external URL');
     }
+  }
+
+  // Save a new display order: ids[0] gets sortOrder 0, ids[1] gets 1, …
+  public async reorder(user: CurrentUser, ids: string[]) {
+    const owned = await this.prisma.article.count({ where: { id: { in: ids }, ownerId: user.id } });
+    if (owned !== ids.length) {
+      throw new BadRequestException('Some items are not yours or no longer exist');
+    }
+    await this.prisma.$transaction(
+      ids.map((id, i) => this.prisma.article.update({ where: { id }, data: { sortOrder: i } })),
+    );
+    return { count: ids.length };
   }
 
   // Turn Prisma errors into HTTP errors.

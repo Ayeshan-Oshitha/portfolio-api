@@ -30,9 +30,8 @@ const publicProjectInclude = {
   owner: { select: { id: true, name: true, image: true } },
 } satisfies Prisma.ProjectInclude;
 
-// Public order: featured first, then your sortOrder, then newest.
+// Public order: your drag-and-drop sortOrder, then newest.
 const publicOrder: Prisma.ProjectOrderByWithRelationInput[] = [
-  { isFeatured: 'desc' },
   { sortOrder: 'asc' },
   { publishedAt: 'desc' },
   { id: 'desc' },
@@ -80,7 +79,7 @@ export class ProjectsService {
         include: projectInclude,
         skip: (page - 1) * limit,
         take: limit,
-        orderBy: [{ isFeatured: 'desc' }, { sortOrder: 'asc' }, { createdAt: 'desc' }],
+        orderBy: [{ sortOrder: 'asc' }, { createdAt: 'desc' }],
       }),
       this.prisma.project.count({ where }),
     ]);
@@ -280,6 +279,18 @@ export class ProjectsService {
       })),
       tags: tags.map((t) => t.tag),
     };
+  }
+
+  // Save a new display order: ids[0] gets sortOrder 0, ids[1] gets 1, …
+  public async reorder(user: CurrentUser, ids: string[]) {
+    const owned = await this.prisma.project.count({ where: { id: { in: ids }, ownerId: user.id } });
+    if (owned !== ids.length) {
+      throw new BadRequestException('Some items are not yours or no longer exist');
+    }
+    await this.prisma.$transaction(
+      ids.map((id, i) => this.prisma.project.update({ where: { id }, data: { sortOrder: i } })),
+    );
+    return { count: ids.length };
   }
 
   // Turn Prisma errors into HTTP errors.

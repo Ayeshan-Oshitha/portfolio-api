@@ -16,6 +16,7 @@ export const envSchema = z.object({
   RESEND_API_KEY: z.string().startsWith('re_'),
   RESEND_FROM: z.string().min(3),
   CONTACT_NOTIFY_TO: z.email(),
+  FRONTEND_URLS: z.string().default('http://localhost:5173'),
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -161,9 +161,11 @@ model Article {
   tagId        String?
   category     ArticleCategory @default(TECH)
   isFeatured   Boolean         @default(false)
+  sortOrder    Int             @default(0)
 
   @@unique([ownerId, slug])
   @@index([ownerId])
+  @@index([ownerId, sortOrder])
   @@index([isPublished, publishedAt])
   @@index([isPublished, category, isFeatured])
   @@map("article")

@@ -71,6 +71,9 @@ export class ApiExceptionFilter extends BaseExceptionFilter {
       this.responseLogger.error({
         status,
         errorType: exception instanceof Error ? exception.name : 'UnknownError',
+        // Prisma error code and metadata (e.g. P2022 + column name): enough to debug, no row data or secrets.
+        prismaCode: (exception as { code?: unknown }).code,
+        prismaMeta: (exception as { meta?: unknown }).meta,
       });
     } else if (exception instanceof ApiException) {
       code = exception.errorCode;

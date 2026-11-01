@@ -12,6 +12,13 @@ async function bootstrap() {
   });
   app.enableShutdownHooks();
 
+  const config = app.get<ConfigService<Env, true>>(ConfigService);
+
+  app.enableCors({
+    origin: config.get('FRONTEND_URLS', { infer: true }).split(','),
+    credentials: true,
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -58,8 +65,6 @@ async function bootstrap() {
       ],
     }),
   );
-
-  const config = app.get<ConfigService<Env, true>>(ConfigService);
 
   const port = config.get('PORT', { infer: true });
   await app.listen(port);

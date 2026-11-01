@@ -29,6 +29,7 @@ import {
   type CurrentUser as CurrentUserType,
 } from '../auth/approved-user.guard.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
+import { ReorderDto } from '../common/dto/reorder.dto.js';
 import { ProjectsService } from './projects.service.js';
 import { CreateProjectDto } from './dto/create-project.dto.js';
 import { UpdateProjectDto } from './dto/update-project.dto.js';
@@ -77,6 +78,14 @@ export class ProjectsController {
   // Get one of your projects.
   findOne(@CurrentUser() user: CurrentUserType, @Param('id') id: string) {
     return this.projectsService.findOne(user, id);
+  }
+
+  @Patch('reorder')
+  @ApiOperation({ summary: 'Set the display order of your projects' })
+  @ApiOkResponse({ description: '{ count }' })
+  // Save the order from drag and drop.
+  reorder(@CurrentUser() user: CurrentUserType, @Body() dto: ReorderDto) {
+    return this.projectsService.reorder(user, dto.ids);
   }
 
   @Patch(':id')
